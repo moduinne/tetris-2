@@ -1,27 +1,21 @@
-#container {
+.game-canvas{
+  background-color: black;
+}
+.game-div{
+   margin-top:20px;
+   margin-left:20px;
+}
+.start-button{
+  padding-right: 30px;
+}
+.stat-div{
   text-align: center;
-
-  position: absolute;
-  left: 0;
-  right: 0;
-  top: 50%;
-  transform: translateY(-50%);
 }
-
-#container strong {
-  font-size: 20px;
-  line-height: 26px;
+table{
+  margin-left: 10px;
 }
-
-#container p {
-  font-size: 16px;
-  line-height: 22px;
-
-  color: #8c8c8c;
-
-  margin: 0;
-}
-
-#container a {
-  text-decoration: none;
+.cell-1{
+  padding-top: 30px;
+  padding-left: 30px;
+  padding-right: 30px;
 }
