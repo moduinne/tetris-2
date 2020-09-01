@@ -8,18 +8,19 @@
   </ion-toolbar>
 </ion-header>
 
-<ion-content [fullscreen]="true" class="content-container">
+<ion-content [fullscreen]="true">
   <div class= "game-div">
     <canvas #canvas class="game-canvas" width="{{w}}" height="{{h}}"></canvas>
   </div>
-  <div class="stat-div">
-    <ion-button class="start-button" (click) = "left()" slot="end">LEFT</ion-button>
-    <ion-button class="start-button" (click) = "down()" slot="end">MUTATE</ion-button>
-    <ion-button class="start-button" (click) = "right()" slot="end">RIGHT</ion-button>
+  <div class = "controls-class">
+    <table>
+      <th><ion-button class = "control-b" (click) = "left()">LEFT</ion-button></th>
+      <th><ion-button class = "control-b" (click) = "right()">RIGHT</ion-button></th>
+    </table>
   </div>
   <div>
     <ion-card class="display-card">
-      <p>Piece: {{pieceCoords}} </p>
+      <p>{{currentPiece.xyCoords | json}}</p>
     </ion-card>
   </div>
 </ion-content>
