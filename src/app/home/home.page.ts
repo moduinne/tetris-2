@@ -3,7 +3,6 @@ import { Cell } from '../cell';
 import { PIECE_IDS,PIECE_L,PIECE_O,PIECE_I,PIECE_T} from '../piece-permutations';
 import { Piece } from '../piece';
 
-
 const ROWS = 15;
 const COLS = 10;
 const DIM = 30;
