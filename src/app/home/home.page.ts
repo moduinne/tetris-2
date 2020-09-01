@@ -28,6 +28,8 @@ export class HomePage implements OnInit{
   public currentBoard:Cell[] = [];
 
   public currentPiece:Piece;
+
+  public lockedInPlaceCoords = [];
   
   private ctx: CanvasRenderingContext2D;
 
@@ -73,9 +75,15 @@ export class HomePage implements OnInit{
     }
   }
 
+  moveValid():boolean {
+    if(this.currentPiece.getLowestY() < this.h-DIM) {
+      return true
+    }
+    return false;
+  }
+
   down() {
     this.currentPiece.moveDown();
-    console.log(this.currentPiece);
   }
 
   left() {
@@ -95,7 +103,14 @@ export class HomePage implements OnInit{
 
   update() {
     this.clearBoard();
-    this.down();
+    if(this.moveValid()){
+      this.down();
+    } else {
+      for(let coor of this.currentPiece.xyCoords){
+        this.lockedInPlaceCoords.push(coor);
+      }
+      this.addNextPiece();
+    }
     this.resetBoardFilledValues();
     this.drawBoard();
   }
@@ -108,6 +123,13 @@ export class HomePage implements OnInit{
   }
 
   resetBoardFilledValues(){
+    for(let cell of this.currentBoard){
+      for(let coor of this.lockedInPlaceCoords){
+        if(cell.posX === coor[0] && cell.posY === coor[1]){
+          cell.isFilled = 1;
+        }
+      }
+    }
     for(let i = 0 ; i < this.currentBoard.length ; i ++){
       for(let j = 0  ; j < this.currentPiece.xyCoords.length ; j ++) {
         let bx = this.currentBoard[i].posX;

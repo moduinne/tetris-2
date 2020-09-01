@@ -26,6 +26,16 @@ export class Piece {
         }
     }
 
+    getLowestY():number {
+        let result:number = 0;
+        for(let i = 0 ; i < this.xyCoords.length ; i++) {
+            if(this.xyCoords[i][1] > result) {
+                result = this.xyCoords[i][1];
+            }
+        }
+        return result;
+    }
+
     moveRight() {
         let newXYCoords:number[][] = [];
         for(let i = 0 ; i < this.xyCoords.length ; i++) {
