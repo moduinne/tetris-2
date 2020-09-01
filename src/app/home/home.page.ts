@@ -19,19 +19,12 @@ export class HomePage implements OnInit{
   canvas: ElementRef<HTMLCanvasElement>;
 
   public w = COLS*DIM;
-
   public h = ROWS*DIM;
-
   public isStarted:boolean = false;
-
   public currentBoard:Cell[] = [];
-
   public currentPiece:Piece;
-
   public lockedInPlaceCoords = [];
-  
   private ctx: CanvasRenderingContext2D;
-
   public gameLoop;
 
   constructor() {}
@@ -56,7 +49,8 @@ export class HomePage implements OnInit{
       }
     }
   }
-
+  
+  //adds a piece randomly from available pieces
   addNextPiece(){
     let randIndex = (Math.random() * PIECE_IDS.length) | 0 ;
     let nextPiece = PIECE_IDS[randIndex];
@@ -73,18 +67,23 @@ export class HomePage implements OnInit{
       this.currentPiece = new Piece(PIECE_I);
     }
   }
-
+  
+  //returns true iff the current piece can move
   moveValid():boolean {
+    if(this.currentPiece.doesntOverlap()) {
+      return true;
     if(this.currentPiece.getLowestY() < this.h-DIM) {
-      return true
+      return true;
     }
     return false;
   }
 
+  //moves the piece one dim down
   down() {
     this.currentPiece.moveDown();
   }
 
+  //moves piece one dim left
   left() {
     this.currentPiece.moveLeft();
     this.clearBoard();
@@ -92,7 +91,8 @@ export class HomePage implements OnInit{
     this.drawBoard();
 
   }
-
+ 
+  //moves piece one dim right
   right() {
     this.currentPiece.moveRight();
     this.clearBoard();
@@ -100,6 +100,7 @@ export class HomePage implements OnInit{
     this.drawBoard();
   }
 
+  //the call per loop
   update() {
     this.clearBoard();
     if(this.moveValid()){
