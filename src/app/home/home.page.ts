@@ -70,8 +70,9 @@ export class HomePage implements OnInit{
   
   //returns true iff the current piece can move
   moveValid():boolean {
-    if(this.currentPiece.doesntOverlap()) {
+    if(this.currentPiece.doesntOverlap(this.currentBoard)) {
       return true;
+    }
     if(this.currentPiece.getLowestY() < this.h-DIM) {
       return true;
     }
