@@ -26,6 +26,10 @@ export class Piece {
         }
     }
 
+    doesntOverlap(board) {
+        return true;//todo
+    }
+
     getLowestY():number {
         let result:number = 0;
         for(let i = 0 ; i < this.xyCoords.length ; i++) {
