@@ -1,4 +1,5 @@
 import { OnInit } from '@angular/core';
+import { Cell } from './cell';
 const DIM:number = 30;
 
 export class Piece {
@@ -26,7 +27,14 @@ export class Piece {
         }
     }
 
-    doesntOverlap(board) {
+    doesntOverlap(board:Cell[]) {
+        for(let coor of this.xyCoords){
+            for(let cell of board){
+                if(coor[0] === cell.posX && coor[1] === cell.posY && cell.isFilled === 1){
+                    return false;
+                }
+            }
+        }
         return true;//todo
     }
 
