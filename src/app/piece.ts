@@ -6,9 +6,7 @@ export class Piece {
 
     public xyCoords = [];
 
-    constructor(
-        public initial:number[][]
-    ){
+    constructor(public initial:number[][]){
         this.setXYCoords(this.initial);
     }
 
@@ -27,15 +25,34 @@ export class Piece {
         }
     }
 
-    doesntOverlap(board:Cell[]) {
-        for(let coor of this.xyCoords){
-            for(let cell of board){
-                if(coor[0] === cell.posX && coor[1] === cell.posY && cell.isFilled === 1){
-                    return false;
-                }
+    getOverLaps(board:Cell[]):number{
+        let lockedCells = [];
+        for(let c of board){
+            if(c.isLocked){
+                lockedCells.push(c);
             }
         }
-        return true;//todo
+        return lockedCells.length;
+    }
+
+    getLowestX():number {
+        let result:number = 300;
+        for(let i = 0 ; i < this.xyCoords.length ; i++) {
+            if(this.xyCoords[i][0] < result) {
+                result = this.xyCoords[i][0];
+            }
+        }
+        return result;
+    }
+
+    getHighestX():number {
+        let result:number = 0;
+        for(let i = 0 ; i < this.xyCoords.length ; i++) {
+            if(this.xyCoords[i][0] > result) {
+                result = this.xyCoords[i][0];
+            }
+        }
+        return result;
     }
 
     getLowestY():number {

@@ -6,6 +6,9 @@ import { Piece } from '../piece';
 const ROWS = 15;
 const COLS = 10;
 const DIM = 30;
+const BOARD_X_MAX = COLS * DIM;
+const BOARD_Y_MAX = ROWS * DIM;
+const START_SPEED = 600;
 
 @Component({
   selector: 'app-home',
@@ -44,7 +47,7 @@ export class HomePage implements OnInit{
         let fill:number = 0;
         let px:number = y * DIM;
         let py:number = x * DIM;
-        let cell = new Cell(fill,px,py);
+        let cell = new Cell(false,fill,px,py);
         this.currentBoard.push(cell);
       }
     }
@@ -67,38 +70,54 @@ export class HomePage implements OnInit{
       this.currentPiece = new Piece(PIECE_I);
     }
   }
-  
+
+  checkForOverLaps() {
+    for(let i = 0 ; i < this.lockedInPlaceCoords.length ; i++) {
+      let coord = this.lockedInPlaceCoords[i];
+      if(this.currentPiece.xyCoords.includes(coord)){
+        console.log(true);
+      } else {
+        console.log(false);
+      }
+    }
+  }
+
   //returns true iff the current piece can move
   moveValid():boolean {
-    if(this.currentPiece.doesntOverlap(this.currentBoard)) {
-      return true;
-    }
-    if(this.currentPiece.getLowestY() < this.h-DIM) {
+    if(this.currentPiece.getLowestY() < this.h-DIM){
       return true;
     }
     return false;
   }
 
+  isEqual(pc:number[],bc:number[]){
+    //TODO
+  }
+
   //moves the piece one dim down
   down() {
     this.currentPiece.moveDown();
+    console.log(this.currentPiece.getOverLaps(this.currentBoard));
   }
 
   //moves piece one dim left
   left() {
-    this.currentPiece.moveLeft();
-    this.clearBoard();
-    this.resetBoardFilledValues();
-    this.drawBoard();
-
+    if(this.currentPiece.getLowestX() - DIM >= 0){
+      this.currentPiece.moveLeft();
+      this.clearBoard();
+      this.resetBoardFilledValues();
+      this.drawBoard();
+    }
   }
  
   //moves piece one dim right
   right() {
-    this.currentPiece.moveRight();
-    this.clearBoard();
-    this.resetBoardFilledValues();
-    this.drawBoard();
+    if(this.currentPiece.getHighestX() + DIM < BOARD_X_MAX) {
+      this.currentPiece.moveRight();
+      this.clearBoard();
+      this.resetBoardFilledValues();
+      this.drawBoard();
+      }
   }
 
   //the call per loop
@@ -128,6 +147,7 @@ export class HomePage implements OnInit{
       for(let coor of this.lockedInPlaceCoords){
         if(cell.posX === coor[0] && cell.posY === coor[1]){
           cell.isFilled = 1;
+          cell.isLocked = true;
         }
       }
     }
@@ -157,7 +177,7 @@ export class HomePage implements OnInit{
 
   start() {
     this.isStarted = true;
-    this.gameLoop = setInterval( () => this.update(), 1000);
+    this.gameLoop = setInterval( () => this.update(), START_SPEED);
   }
 
   pause() {
