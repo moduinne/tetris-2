@@ -73,9 +73,8 @@ export class HomePage implements OnInit{
 
   mutate(){
     if(this.currentPiece.pieceID != "O"){
-      console.log(this.currentPiece.currentPerm);
+
     }
-    
   }
 
   isOverLapDown() {
