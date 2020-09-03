@@ -15,12 +15,8 @@
   <div class = "controls-class">
     <table>
       <th><ion-button class = "control-b" (click) = "left()">LEFT</ion-button></th>
+      <th><ion-button class = "control-b" (click) = "mutate()">Mutate</ion-button></th>
       <th><ion-button class = "control-b" (click) = "right()">RIGHT</ion-button></th>
     </table>
-  </div>
-  <div>
-    <ion-card class="display-card">
-      <p>{{currentPiece.xyCoords | json}}</p>
-    </ion-card>
   </div>
 </ion-content>

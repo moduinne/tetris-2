@@ -1,13 +1,15 @@
-import { OnInit } from '@angular/core';
-import { Cell } from './cell';
-const DIM:number = 30;
+import { T_PERMS, L_PERMS, I_PERMS } from './piece-permutations';
 
+const DIM:number = 30;
 export class Piece {
 
     public xyCoords = [];
+    public perms;
+    public currentPerm = -1;
 
-    constructor(public initial:number[][]){
+    constructor(public initial:number[][], public pieceID:string){
         this.setXYCoords(this.initial);
+        this.setPermutations(this.pieceID);
     }
 
     setXYCoords(init:number[][]){
@@ -25,14 +27,23 @@ export class Piece {
         }
     }
 
-    getOverLaps(board:Cell[]):number{
-        let lockedCells = [];
-        for(let c of board){
-            if(c.isLocked){
-                lockedCells.push(c);
-            }
+    setPermutations(pieceID){
+        if(pieceID === "T") {
+            this.perms = T_PERMS;
+            this.currentPerm = this.perms[0];
         }
-        return lockedCells.length;
+        if(pieceID === "L") {
+            this.perms = L_PERMS;
+            this.currentPerm = this.perms[0];
+        }
+        if(pieceID === "I"){
+            this.perms = I_PERMS;
+            this.currentPerm = this.perms[0];
+        }
+    }
+
+    mutate(){
+        //TODO
     }
 
     getLowestX():number {
