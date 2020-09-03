@@ -5,7 +5,10 @@ export class Piece {
 
     public xyCoords = [];
     public perms;
-    public currentPerm = -1;
+    public permNum = 0;
+    public currentPerm;
+    public centerXY;
+
 
     constructor(public initial:number[][], public pieceID:string){
         this.setXYCoords(this.initial);
@@ -30,20 +33,35 @@ export class Piece {
     setPermutations(pieceID){
         if(pieceID === "T") {
             this.perms = T_PERMS;
-            this.currentPerm = this.perms[0];
+            this.currentPerm = this.perms[this.permNum];
         }
         if(pieceID === "L") {
             this.perms = L_PERMS;
-            this.currentPerm = this.perms[0];
+            this.currentPerm = this.perms[this.permNum];
         }
         if(pieceID === "I"){
             this.perms = I_PERMS;
-            this.currentPerm = this.perms[0];
+            this.currentPerm = this.perms[this.permNum];
         }
     }
 
     mutate(){
-        //TODO
+        let newXYCoords = [];
+        this.permNum += 1;
+        if(this.permNum > 3){
+            this.permNum = 0;
+        }
+        this.currentPerm = this.perms[this.permNum];
+        for(let y = 0 ; y < this.currentPerm ; y++){
+            for(let x = 0 ; x < this.currentPerm ; x++){
+                if(this.currentPerm[y][x] > 0) {
+                    let cx = x;
+                    let xy = y;
+                    
+                }
+            }
+        }
+        
     }
 
     getLowestX():number {
