@@ -3,9 +3,10 @@ import { Cell } from '../cell';
 import { PIECE_IDS,PIECE_L,PIECE_O,PIECE_I,PIECE_T} from '../piece-permutations';
 import { Piece } from '../piece';
 
-const ROWS = 15;
-const COLS = 10;
-const DIM = 30;
+const SCALE = 1;
+const ROWS = 17 * SCALE;
+const COLS = 11 * SCALE;
+const DIM = 30 /SCALE;
 const BOARD_X_MAX = COLS * DIM;
 const START_SPEED = 600;
 
@@ -23,9 +24,12 @@ export class HomePage implements OnInit{
   public w = COLS*DIM;
   public h = ROWS*DIM;
   public isStarted:boolean = false;
+
   public currentBoard:Cell[] = [];
-  public currentPiece:Piece;
   public lockedInPlaceCoords = [];
+
+  public currentPiece:Piece;
+  
 
   private ctx: CanvasRenderingContext2D;
 
@@ -56,7 +60,7 @@ export class HomePage implements OnInit{
   //adds a piece randomly from available pieces
   addNextPiece(){
     let randIndex = (Math.random() * PIECE_IDS.length) | 0 ;
-    let nextPiece = PIECE_IDS[randIndex];
+    let nextPiece = PIECE_IDS[2]; //PIECE_IDS[randIndex];
     if(nextPiece === "T") {
       this.currentPiece = new Piece(PIECE_T, "T");
     }
@@ -72,9 +76,16 @@ export class HomePage implements OnInit{
   }
 
   mutate(){
-    if(this.currentPiece.pieceID != "O"){
-
+    if(this.currentPiece.pieceID === "T"){
+      this.currentPiece.mutateT();
     }
+    else if (this.currentPiece.pieceID === "I"){
+      this.currentPiece.mutateI();
+    }
+    this.clearBoard();
+    this.resetBoardFilledValues();
+    this.drawBoard();
+    
   }
 
   isOverLapDown() {

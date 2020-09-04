@@ -1,6 +1,7 @@
 import { T_PERMS, L_PERMS, I_PERMS } from './piece-permutations';
-
-const DIM:number = 30;
+import { isAbsolute } from 'path';
+const SCALE = 1;
+const DIM:number = 30/SCALE;
 export class Piece {
 
     public xyCoords = [];
@@ -43,25 +44,82 @@ export class Piece {
             this.perms = I_PERMS;
             this.currentPerm = this.perms[this.permNum];
         }
-    }
+    }    
 
-    mutate(){
-        let newXYCoords = [];
-        this.permNum += 1;
-        if(this.permNum > 3){
+    mutateI(){
+        if(this.permNum === 0) {
+            var x0 = this.xyCoords[0][0] += DIM;
+            var y0 = this.xyCoords[0][1] -= DIM;
+            var x2 = this.xyCoords[2][0] -= DIM;
+            var y2 = this.xyCoords[2][1] += DIM;
+            if(this.isAble(x0,y0) && this.isAble(x2,y2)) {
+                var newXYPos0 = [x0,y0];
+                var newXYPos2 = [x2,y2];
+                this.xyCoords[0] = newXYPos0;
+                this.xyCoords[2] = newXYPos2;
+                this.permNum += 1;
+            } else{
+                //do nothing
+            }
+        } else {
+            this.xyCoords[0][0] -= DIM;
+            this.xyCoords[0][1] += DIM;
+            this.xyCoords[2][0] += DIM;
+            this.xyCoords[2][1] -= DIM;
             this.permNum = 0;
         }
-        this.currentPerm = this.perms[this.permNum];
-        for(let y = 0 ; y < this.currentPerm ; y++){
-            for(let x = 0 ; x < this.currentPerm ; x++){
-                if(this.currentPerm[y][x] > 0) {
-                    let cx = x;
-                    let xy = y;
-                    
-                }
+    }
+
+    isAble(px,py):Boolean {
+        if(px < 0 || px > 300 || py > 440 ) {
+            return false;
+        }
+        return true;
+    }
+
+    mutateT(){
+        if(this.permNum === 0) {
+            this.permNum += 1;
+            let x = this.xyCoords[3][0] -= DIM;
+            let y = this.xyCoords[3][1] += DIM;
+            if(this.isAble(x,y)){
+                let newXYPos = [x,y]
+                this.xyCoords[3] = newXYPos;
+            } else{
+                //do nothing
+            } 
+        }
+        else if(this.permNum === 1) {
+            this.permNum += 1;
+            let x = this.xyCoords[0][0] += DIM;
+            let y = this.xyCoords[0][1] += DIM;
+            if(this.isAble(x,y)){
+                let newXYPos = [x,y]
+                this.xyCoords[0] = newXYPos;
+            } else {
+                //do nothing
             }
         }
-        
+        else if(this.permNum === 2) {
+            this.permNum += 1;
+            let x = this.xyCoords[1][0] += DIM;
+            let y = this.xyCoords[1][1] -= DIM;
+            if(this.isAble(x,y)){
+                let newXYPos = [x,y]
+                this.xyCoords[1] = newXYPos;
+            } else {
+                //do nothing
+            }
+        }
+        else {
+            this.permNum = 0;
+            this.xyCoords[3][0] += DIM;
+            this.xyCoords[3][1] -= DIM;
+            this.xyCoords[0][0] -= DIM;
+            this.xyCoords[0][1] -= DIM;
+            this.xyCoords[1][0] -= DIM;
+            this.xyCoords[1][1] += DIM;
+        }
     }
 
     getLowestX():number {
