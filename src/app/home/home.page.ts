@@ -60,7 +60,7 @@ export class HomePage implements OnInit{
   //adds a piece randomly from available pieces
   addNextPiece(){
     let randIndex = (Math.random() * PIECE_IDS.length) | 0 ;
-    let nextPiece = PIECE_IDS[2]; //PIECE_IDS[randIndex];
+    let nextPiece = PIECE_IDS[3]; //PIECE_IDS[randIndex];
     if(nextPiece === "T") {
       this.currentPiece = new Piece(PIECE_T, "T");
     }
@@ -75,13 +75,32 @@ export class HomePage implements OnInit{
     }
   }
 
+  isAbleToMutate() :Boolean {
+    let xyTest = []; 
+    if(this.currentPiece.pieceID === "I") {
+      xyTest = this.currentPiece.testMutationI();
+    }
+     else if(this.currentPiece.pieceID === "T") {
+      xyTest = this.currentPiece.testMutationT();
+    }
+    //test bounds of the board for illegal activity from the piece coords
+    for(let xy of xyTest) {
+      if(xy[0] > 300 || xy[0] < 0 || xy[1] > 480) {
+        return false;
+      }
+    }
+    return true;
+  }
+
   mutate(){
-    if(this.currentPiece.pieceID === "T"){
+    if(this.currentPiece.pieceID === "T" && this.isAbleToMutate() ){
       this.currentPiece.mutateT();
     }
-    else if (this.currentPiece.pieceID === "I"){
+    else if (this.currentPiece.pieceID === "I" && this.isAbleToMutate ()){
       this.currentPiece.mutateI();
     }
+
+    //tODO OTHERS
     this.clearBoard();
     this.resetBoardFilledValues();
     this.drawBoard();
@@ -167,9 +186,29 @@ export class HomePage implements OnInit{
       }
   }
 
+  getBoardInRows():Cell[][] {
+    let result = [];
+    let row = []
+    for(let i  = 0 ; i < this.currentBoard.length ; i++) {
+      if(i % 11 === 0){
+        result.push(row);
+        row = [];
+      } else {
+        row.push(this.currentBoard[i]);
+      }
+    }
+    return result.splice(1,result.length);
+  }
+  
+  removeFullRowsAndDropLeftOvers() {
+    let boardRows = this.getBoardInRows();
+    console.log(boardRows);
+  }
+
   //the call update per loop in the start() method setinterval call
   update() {
     this.clearBoard();
+    this.removeFullRowsAndDropLeftOvers();
     if(this.moveValid()){
       this.down();
     } else {
@@ -177,14 +216,9 @@ export class HomePage implements OnInit{
         this.lockedInPlaceCoords.push(coor);
       }
       this.addNextPiece();
-      this.checkForFilledRow(); //TODO
     }
     this.resetBoardFilledValues();
     this.drawBoard();
-  }
-
-  checkForFilledRow() {
-    //TODO
   }
 
   clearBoard() {

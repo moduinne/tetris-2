@@ -7,8 +7,6 @@ export class Piece {
     public perms;
     public permNum = 0;
     public currentPerm;
-    public centerXY;
-
 
     constructor(public initial:number[][], public pieceID:string){
         this.setXYCoords(this.initial);
@@ -43,37 +41,85 @@ export class Piece {
             this.perms = I_PERMS;
             this.currentPerm = this.perms[this.permNum];
         }
-    }    
+    }
+
+    testMutationI():Number[][] {
+        let testList = []
+        if(this.permNum === 0) {
+            let x0 = this.xyCoords[0][0] + DIM;
+            let y0 = this.xyCoords[0][1] - DIM;
+            let x2 = this.xyCoords[2][0] - DIM;
+            let y2 = this.xyCoords[2][1] + DIM;
+            let newXYPos0 = [x0,y0];
+            let newXYPos2 = [x2,y2];
+            testList.push(newXYPos0, newXYPos2);
+        } 
+        else if (this.permNum === 1) {
+            let x0 = this.xyCoords[0][0] - DIM;
+            let y0 = this.xyCoords[0][1] + DIM;
+            let x2 = this.xyCoords[2][0] + DIM;
+            let y2 = this.xyCoords[2][1] - DIM;
+            let newXYPos0 = [x0,y0];
+            let newXYPos2 = [x2,y2];
+            testList.push(newXYPos0, newXYPos2);
+        }
+        //console.log(testList);
+        return testList;
+    }
+
+    
 
     mutateI(){
         if(this.permNum === 0) {
-            var x0 = this.xyCoords[0][0] += DIM;
-            var y0 = this.xyCoords[0][1] -= DIM;
-            var x2 = this.xyCoords[2][0] -= DIM;
-            var y2 = this.xyCoords[2][1] += DIM;
-            if(this.isAble(x0,y0) && this.isAble(x2,y2)) {
-                var newXYPos0 = [x0,y0];
-                var newXYPos2 = [x2,y2];
-                this.xyCoords[0] = newXYPos0;
-                this.xyCoords[2] = newXYPos2;
-                this.permNum += 1;
-            } else{
-                //do nothing
-            }
+            let x0 = this.xyCoords[0][0] + DIM;
+            let y0 = this.xyCoords[0][1] - DIM;
+            let x2 = this.xyCoords[2][0] - DIM;
+            let y2 = this.xyCoords[2][1] + DIM;
+            let newXYPos0 = [x0,y0];
+            let newXYPos2 = [x2,y2];
+            this.xyCoords[0] = newXYPos0;
+            this.xyCoords[2] = newXYPos2;
+            this.permNum += 1;
         } else {
-            this.xyCoords[0][0] -= DIM;
-            this.xyCoords[0][1] += DIM;
-            this.xyCoords[2][0] += DIM;
-            this.xyCoords[2][1] -= DIM;
+            let x0 = this.xyCoords[0][0] - DIM;
+            let y0 = this.xyCoords[0][1] + DIM;
+            let x2 = this.xyCoords[2][0] + DIM;
+            let y2 = this.xyCoords[2][1] - DIM;
+            let newXYPos0 = [x0,y0];
+            let newXYPos2 = [x2,y2];
+            this.xyCoords[0] = newXYPos0;
+            this.xyCoords[2] = newXYPos2;
             this.permNum = 0;
         }
     }
 
-    isAble(px,py):Boolean {
-        if(px < 0 || px > 300 || py > 440 ) {
-            return false;
+    testMutationT():Number[][] {
+        let testList = [];
+        if(this.permNum === 0) {
+            let x = this.xyCoords[3][0] - DIM;
+            let y = this.xyCoords[3][1] +DIM;
+            testList.push([x,y]);
         }
-        return true;
+        else if(this.permNum === 1) {
+            let x = this.xyCoords[0][0] + DIM;
+            let y = this.xyCoords[0][1] + DIM;
+            testList.push([x,y]);
+        }
+        else if(this.permNum === 2) {
+            let x = this.xyCoords[1][0] + DIM;
+            let y = this.xyCoords[1][1] - DIM;
+            testList.push([x,y]);
+        }
+        else if(this.permNum === 3) {
+            let x3 = this.xyCoords[3][0] + DIM;
+            let y3 = this.xyCoords[3][1] - DIM;
+            let x0 = this.xyCoords[0][0] - DIM;
+            let y0 = this.xyCoords[0][1] - DIM;
+            let x1 = this.xyCoords[1][0] - DIM;
+            let y1 = this.xyCoords[1][1] + DIM;
+            testList.push([x3,y3], [x0,y0],[x1,y1]);
+        }
+        return testList;
     }
 
     mutateT(){
@@ -81,34 +127,22 @@ export class Piece {
             this.permNum += 1;
             let x = this.xyCoords[3][0] -= DIM;
             let y = this.xyCoords[3][1] += DIM;
-            if(this.isAble(x,y)){
-                let newXYPos = [x,y]
-                this.xyCoords[3] = newXYPos;
-            } else{
-                //do nothing
-            } 
+            let newXYPos = [x,y]
+            this.xyCoords[3] = newXYPos;
         }
         else if(this.permNum === 1) {
             this.permNum += 1;
             let x = this.xyCoords[0][0] += DIM;
             let y = this.xyCoords[0][1] += DIM;
-            if(this.isAble(x,y)){
-                let newXYPos = [x,y]
-                this.xyCoords[0] = newXYPos;
-            } else {
-                //do nothing
-            }
+            let newXYPos = [x,y]
+            this.xyCoords[0] = newXYPos;
         }
         else if(this.permNum === 2) {
             this.permNum += 1;
             let x = this.xyCoords[1][0] += DIM;
             let y = this.xyCoords[1][1] -= DIM;
-            if(this.isAble(x,y)){
-                let newXYPos = [x,y]
-                this.xyCoords[1] = newXYPos;
-            } else {
-                //do nothing
-            }
+            let newXYPos = [x,y]
+            this.xyCoords[1] = newXYPos;
         }
         else {
             this.permNum = 0;
