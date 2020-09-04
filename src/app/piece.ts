@@ -1,5 +1,4 @@
 import { T_PERMS, L_PERMS, I_PERMS } from './piece-permutations';
-import { isAbsolute } from 'path';
 const SCALE = 1;
 const DIM:number = 30/SCALE;
 export class Piece {
