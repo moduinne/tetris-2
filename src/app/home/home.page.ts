@@ -2,6 +2,7 @@ import { Component, OnInit, ViewChild, ElementRef} from '@angular/core';
 import { Cell } from '../cell';
 import { PIECE_IDS,PIECE_L,PIECE_O,PIECE_I,PIECE_T} from '../piece-permutations';
 import { Piece } from '../piece';
+import { of } from 'rxjs';
 
 const SCALE = 1;
 const ROWS = 17 * SCALE;
@@ -24,6 +25,8 @@ export class HomePage implements OnInit{
   public w = COLS*DIM;
   public h = ROWS*DIM;
   public isStarted:boolean = false;
+
+  public rowMap = new Map<Number, Cell[]>();
 
   public currentBoard:Cell[] = [];
   public lockedInPlaceCoords = [];
@@ -202,28 +205,94 @@ export class HomePage implements OnInit{
     return result.splice(1, result.length);
   }
 
-  
-  
-  removeFullRowsAndDropLeftOvers() {
-    let boardRows = this.getBoardInRows();
-    for(let row = 0 ; row < boardRows.length ; row ++) {
-      let cellArray:Cell[] = boardRows[row];
-      let resultArray = [];
-      for(let cell = 0 ; cell < cellArray.length ; cell ++){
-        if(!cellArray[cell].isLocked){
-          resultArray.push(cell);
-        }
-      }
-      if(resultArray.length > 0) {
-        console.log("we got one full line locked in place");
+  //Creates the board map to rows based on 0 to w/e
+  createBoardMap() {
+    let array = this.getBoardInRows();
+    for(let i = 0 ; i < array.length ; i++){
+      let row = array[i];
+      this.rowMap.set(i, row);
+    }
+  }
+
+  isFullRow(row:Cell[]) :Boolean {
+    for(let i = 0 ; i < row.length ; i++) {
+      let cell:Cell = row[i];
+      if(!cell.isLocked) {
+        return false;
       }
     }
+    return true;
+  }
+
+  findAllFullRows():Number[] {
+    let fullRowIndexArray = [];
+    for(let i = 0 ; i < this.rowMap.size ; i++) {
+      let cellArray:Cell[] = this.rowMap.get(i);
+      if(this.isFullRow(cellArray)){
+        fullRowIndexArray.push(i);
+      }
+    }
+    return fullRowIndexArray;
+  }
+
+  removeFullRows() {
+    let fullRows:Number[] = this.findAllFullRows();
+    for(let i = 0 ; i < fullRows.length ; i++){
+      let cellArray:Cell[] = this.rowMap.get(fullRows[i]);
+      for(let c = 0 ; c < cellArray.length ; c ++){
+        let cell:Cell = cellArray[c];
+        let xy = [cell.posX, cell.posY];
+        cell.isLocked = false;
+        cell.isFilled = 0;
+        this.lockedInPlaceCoords = this.getNewLockedXYCoords(xy);
+      }
+    }
+
+    let cellsToDrop:Cell[] = this.getCellsToDrop(fullRows);
+    for(let j = 0 ; j < cellsToDrop.length ; j++) {
+      let ctd:Cell = cellsToDrop[j];
+      let xytd = [ctd.posX, ctd.posY];
+      let nxy = [ctd.posX,ctd.posY+DIM];
+      this.lockedInPlaceCoords = this.getNewLockedXYCoords(xytd);
+      ctd.isLocked = false;
+      ctd.isFilled = 0;
+      this.lockedInPlaceCoords.push(nxy);
+    }
+  }
+
+  getCellsToDrop(rows:Number[]) {
+    let result:Cell[] = [];
+    for(let i = 0 ; i < this.rowMap.size ; i ++) {
+      if(i < rows[0]) {
+        let arr:Cell[] = this.rowMap.get(i);
+        for(let c = 0 ; c < arr.length ; c ++) {
+          let cell:Cell = arr[c];
+          if(cell.isLocked){
+            result.push(cell);
+          }
+        }
+      }
+    }
+    return result;
+  }
+
+  getNewLockedXYCoords(arr:Number[]) {
+    let newXYLocked = [];
+    for(let i = 0 ; i < this.lockedInPlaceCoords.length ; i++) {
+      let xy:Number[] = this.lockedInPlaceCoords[i];
+      if(JSON.stringify(xy) != JSON.stringify(arr)) {
+        newXYLocked.push(xy);
+      }
+    }
+    return newXYLocked;
   }
 
   //the call update per loop in the start() method setinterval call
   update() {
     this.clearBoard();
-    this.removeFullRowsAndDropLeftOvers();
+    this.createBoardMap();
+    this.findAllFullRows();
+    this.removeFullRows();
     if(this.moveValid()){
       this.down();
     } else {
@@ -278,7 +347,7 @@ export class HomePage implements OnInit{
 
   start() {
     this.isStarted = true;
-    this.gameLoop = setInterval( () => this.update(), START_SPEED);
+    this.gameLoop = setInterval( () => this.update(), START_SPEED/2);
   }
 
   pause() {
