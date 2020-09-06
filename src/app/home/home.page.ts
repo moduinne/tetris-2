@@ -60,7 +60,8 @@ export class HomePage implements OnInit{
   //adds a piece randomly from available pieces
   addNextPiece(){
     let randIndex = (Math.random() * PIECE_IDS.length) | 0 ;
-    let nextPiece = PIECE_IDS[3]; //PIECE_IDS[randIndex];
+    //let nextPiece = PIECE_IDS[3]; //PIECE_IDS[randIndex];
+    let nextPiece = PIECE_IDS[randIndex];
     if(nextPiece === "T") {
       this.currentPiece = new Piece(PIECE_T, "T");
     }
@@ -188,21 +189,35 @@ export class HomePage implements OnInit{
 
   getBoardInRows():Cell[][] {
     let result = [];
-    let row = []
-    for(let i  = 0 ; i < this.currentBoard.length ; i++) {
-      if(i % 11 === 0){
+    let row = [];
+    for(let i  = 0 ; i < (ROWS*COLS)+COLS ; i++) {
+      row.push(this.currentBoard[i]);
+      if(i % COLS === 0){
+        row.pop();
         result.push(row);
         row = [];
-      } else {
         row.push(this.currentBoard[i]);
       }
     }
-    return result.splice(1,result.length);
+    return result.splice(1, result.length);
   }
+
+  
   
   removeFullRowsAndDropLeftOvers() {
     let boardRows = this.getBoardInRows();
-    console.log(boardRows);
+    for(let row = 0 ; row < boardRows.length ; row ++) {
+      let cellArray:Cell[] = boardRows[row];
+      let resultArray = [];
+      for(let cell = 0 ; cell < cellArray.length ; cell ++){
+        if(!cellArray[cell].isLocked){
+          resultArray.push(cell);
+        }
+      }
+      if(resultArray.length > 0) {
+        console.log("we got one full line locked in place");
+      }
+    }
   }
 
   //the call update per loop in the start() method setinterval call
