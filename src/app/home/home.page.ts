@@ -63,8 +63,15 @@ export class HomePage implements OnInit{
   }
 
   drawBoard(){
-    
-
+    let fillXY = this.board.getFilledCells();
+    this.ctx.strokeStyle = 'black';
+    for(let xy of fillXY) {
+      let x = xy[0];
+      let y = xy[1];
+      this.ctx.strokeRect(x,y,DIM,DIM);
+      this.ctx.fillStyle = 'blue';
+      this.ctx.fillRect(x,y,DIM,DIM);
+    }
   }
 
   start() {

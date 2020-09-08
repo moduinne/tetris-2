@@ -31,15 +31,27 @@ export class Board {
     addPieceToBoard(piece:Piece) {
         let xyPiece = piece.getXYPositionsOfPiece(piece.x, piece.y,this.dim);
         for(let xy of xyPiece) {
-            this.cellMap.get(xy).isFilled = 1;
+            let cell:Cell = this.cellMap.get(xy)
+            //cell.setIsFilled(1);
         }
     }
     
     clearUnlockedCells() {
         for(let xy of this.cellMap.keys()) {
             if(!this.cellMap.get(xy).isLocked) {
-                this.cellMap.get(xy).isFilled = 0;
+                let cell:Cell = this.cellMap.get(xy);
+                cell.isFilled = 0;
             }
         }
+    }
+
+    getFilledCells() {
+        let result = [];
+        for(let xy of this.cellMap.keys()){
+            if(this.cellMap.get(xy).isFilled > 0 || this.cellMap.get(xy).isLocked){
+                result.push(xy);
+            }
+        }
+        return result;
     }
 }
