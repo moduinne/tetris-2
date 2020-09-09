@@ -18,6 +18,14 @@ export class Board {
 
     }
 
+    getCell(pos:[Number,Number]):Cell{
+        for(let key of this.cellMap.keys()){
+            if(JSON.stringify(pos) === JSON.stringify(key)){
+                return this.cellMap.get(pos);
+            }
+        }
+    }
+
     setCellMap() {
         for(let r = 0 ; r < this.rows ; r ++) {
             for (let c = 0 ; c < this.cols ; c ++) {
@@ -31,9 +39,15 @@ export class Board {
     addPieceToBoard(piece:Piece) {
         let xyPiece = piece.getXYPositionsOfPiece(piece.x, piece.y,this.dim);
         for(let xy of xyPiece) {
-            let cell:Cell = this.cellMap.get(xy)
-            //cell.setIsFilled(1);
+            this.getCell(xy).isFilled = 1;
+            console.log(this.getCell(xy));
         }
+        // for(let i = 0 ;i < xyPiece.length ; i ++) {
+        //     let xy = xyPiece[i];
+        //     for(let key of this.cellMap.keys()) {
+        //         if(JSON.stringify(xy) === JSON.stringify())
+        //     }
+        // }
     }
     
     clearUnlockedCells() {
