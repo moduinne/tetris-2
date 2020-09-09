@@ -43,7 +43,7 @@ export class Piece {
         return result;
     }
 
-    getXYPositionsOfPiece(centerX:number, centerY:number, dim:number) {
+    getXYPositionsOfPiece(centerX, centerY, dim:number) {
         let xyPositions = [];
         let filledRCPairs = this.getFilledRowColPairsForPermutation();
         for(let i  = 0 ; i < filledRCPairs.length ; i++) {

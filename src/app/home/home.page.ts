@@ -1,6 +1,6 @@
 import { Component, OnInit, ViewChild, ElementRef} from '@angular/core';
-import { Board } from '../board';
 import { Piece } from '../piece';
+import { Cell } from '../cell';
 import { PIECE_T } from '../piece-permutations';
 
 const SCALE = 1;
@@ -23,11 +23,12 @@ export class HomePage implements OnInit{
   canvas: ElementRef<HTMLCanvasElement>;
 
   public w = COLS*DIM;
+
   public h = ROWS*DIM;
 
   public isStarted:boolean = false;
 
-  public board:Board;
+  public cellMap:Map<number[], Cell>;
 
   public currentPiece:Piece;
 
@@ -37,16 +38,44 @@ export class HomePage implements OnInit{
 
   constructor() {}
 
-  ngOnInit(): void {
+  ngOnInit(){
     this.ctx = this.canvas.nativeElement.getContext('2d');
-    this.board = new Board(COLS,ROWS);
-    this.currentPiece = new Piece(START_X,START_Y, "T", PIECE_T, 0);
-    this.board.addPieceToBoard(this.currentPiece);
-    this.drawBoard();
+    this.setCellMapForBoard();
+    this.currentPiece = new Piece(START_X, START_Y, "T", PIECE_T, 0);
+    this.addPieceToBoard(this.currentPiece);
   }
 
+  setCellMapForBoard(){
+    this.cellMap = new Map<number[],Cell>();
+    for(let r = 0 ; r < ROWS ; r ++) {
+      for (let c = 0 ; c < COLS ; c ++) {
+        let x = c * DIM;
+        let y = r * DIM;
+        let xy = [];
+        xy.push(x);
+        xy.push(y);
+        this.cellMap.set(xy, new Cell(false,0));
+      }
+    }
+  }
+
+  addPieceToBoard(p:Piece) {
+    let pCells = [];
+    for(let xy of p.getXYPositionsOfPiece(p.x, p.y, DIM)) {
+      for(let k of this.cellMap.keys()) {
+        if(JSON.stringify(xy) === JSON.stringify(k)) {
+          this.cellMap.get(k).filled = 1;
+          pCells.push(this.cellMap.get(k));
+        }
+      }
+    }
+    console.log(pCells);
+  }
+
+
+
   mutate() {
-    
+   
   }
 
   left() {
@@ -58,20 +87,11 @@ export class HomePage implements OnInit{
   }
  
   update() {
-
     
   }
 
   drawBoard(){
-    let fillXY = this.board.getFilledCells();
-    this.ctx.strokeStyle = 'black';
-    for(let xy of fillXY) {
-      let x = xy[0];
-      let y = xy[1];
-      this.ctx.strokeRect(x,y,DIM,DIM);
-      this.ctx.fillStyle = 'blue';
-      this.ctx.fillRect(x,y,DIM,DIM);
-    }
+
   }
 
   start() {
