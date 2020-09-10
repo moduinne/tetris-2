@@ -43,10 +43,6 @@ export class HomePage implements OnInit{
     
   }
 
-  movePieceDown() {
-   this.board.moveCurrentPiece("down",this.board.getCurrentPiece());
-  }
-
   left() {
     //TODO
   }
@@ -56,6 +52,7 @@ export class HomePage implements OnInit{
   }
  
   update() {
+    this.ctx.clearRect(0,0,this.w,this.h);
     this.board.reset();
     this.board.addPieceToBoard();
     this.drawBoard();

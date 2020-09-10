@@ -44,28 +44,19 @@ export class Board {
         }
     }
 
-    moveCurrentPiece(cmd:string, piece:Piece) {
-        if(cmd === "down") {
-            piece.y += DIM;
-        }
-        if(cmd === "left") {
-            piece.x -= DIM;
-        }
-        if(cmd === "right") {
-            piece.x += DIM;
-        }
-    }
-
     getCurrentPiece() {
         return this.currentPiece;
     }
     
    reset(){
-       for(let k of this.cellMap.keys()) {
-           let cell:Cell = this.cellMap.get(k);
-           cell.isFilled = 0;
-           this.cellMap.set(k,cell);
+       for(let v of this.cellMap.values()) {
+           v.isFilled = 0;
        }
+    //    for(let k of this.cellMap.keys()) {
+    //        let cell:Cell = this.cellMap.get(k);
+    //        cell.isFilled = 0;
+    //        this.cellMap.set(k,cell);
+    //    }
    }
 
     getFilledCells() {
