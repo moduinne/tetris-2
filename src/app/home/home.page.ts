@@ -8,8 +8,6 @@ const ROWS = 17 * SCALE;
 const COLS = 11 * SCALE;
 const DIM = 30 /SCALE;
 const START_SPEED = 1000;
-const START_X = 4 * DIM;
-const START_Y = 0 * DIM;
 
 @Component({
   selector: 'app-home',
@@ -29,8 +27,6 @@ export class HomePage implements OnInit{
 
   public board:Board;
 
-  public currentPiece:Piece;
-
   private ctx: CanvasRenderingContext2D;
 
   public gameLoop;
@@ -39,9 +35,7 @@ export class HomePage implements OnInit{
 
   ngOnInit(): void {
     this.ctx = this.canvas.nativeElement.getContext('2d');
-    this.board = new Board(COLS,ROWS);
-    this.currentPiece = new Piece(START_X,START_Y, "T", PIECE_T, 0);
-    this.board.addPieceToBoard(this.currentPiece);
+    this.board = new Board(ROWS,COLS);
     this.drawBoard();
   }
 
@@ -49,21 +43,27 @@ export class HomePage implements OnInit{
     
   }
 
+  movePieceDown() {
+   this.board.moveCurrentPiece("down",this.board.getCurrentPiece());
+  }
+
   left() {
-    console.log('left button pressed');
+    //TODO
   }
 
   right() {
-    console.log('right button pressed');
+
   }
  
   update() {
-
-    
+    this.board.reset();
+    this.board.addPieceToBoard();
+    this.drawBoard();
   }
 
   drawBoard(){
     let fillXY = this.board.getFilledCells();
+    console.log(fillXY.length)
     this.ctx.strokeStyle = 'black';
     for(let xy of fillXY) {
       let x = xy[0];

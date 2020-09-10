@@ -13,5 +13,6 @@ export class Cell {
 
     public setIsFilled(num){
         this.isFilled = num;
+        this.color = this.colors[this.isFilled];
     }
 }

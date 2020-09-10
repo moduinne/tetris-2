@@ -70,7 +70,8 @@ export class Piece {
             if(r === 1){
                 yPos = centerY;
             }
-            xyPositions.push([xPos,yPos]);
+            let xy:[Number,Number] = [xPos, yPos];
+            xyPositions.push(xy);
         }
         return xyPositions;
     }
