@@ -43,19 +43,32 @@ export class HomePage implements OnInit{
     
   }
 
+  down() {
+    this.board.reset();
+    this.ctx.clearRect(0,0,this.w,this.h);
+    this.board.movePieceDown();
+    this.board.addPieceToBoard();
+    this.drawBoard();
+  }
+
   left() {
-    //TODO
+    this.board.movePieceLeft();
+    this.board.reset();
+    this.ctx.clearRect(0,0,this.w,this.h);
+    this.board.addPieceToBoard()
+    this.drawBoard();
   }
 
   right() {
-
+    this.board.movePieceRight();
+    this.board.reset();
+    this.ctx.clearRect(0,0,this.w,this.h);
+    this.board.addPieceToBoard()
+    this.drawBoard();
   }
  
   update() {
-    this.ctx.clearRect(0,0,this.w,this.h);
-    this.board.reset();
-    this.board.addPieceToBoard();
-    this.drawBoard();
+    this.down();
   }
 
   drawBoard(){

@@ -1,4 +1,5 @@
 import { PIECE_IDS, PIECE_T } from './piece-permutations';
+const DIM = 30;
 
 export class Piece {
 
@@ -92,5 +93,17 @@ export class Piece {
         } else {
             this.shapeNum += 1;
         }
-    }  
+    }
+    
+    left() {
+        this.x -= DIM;
+    }
+
+    right() {
+        this.x += DIM;
+    }
+
+    down() {
+        this.y += DIM;
+    }
 }

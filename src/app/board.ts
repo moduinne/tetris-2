@@ -19,7 +19,6 @@ export class Board {
         this.h = this.rows * DIM; 
         this.setCellMap();
         this.addPieceToBoard();
-
     }
 
     setCellMap() {
@@ -49,14 +48,10 @@ export class Board {
     }
     
    reset(){
-       for(let v of this.cellMap.values()) {
-           v.isFilled = 0;
-       }
-    //    for(let k of this.cellMap.keys()) {
-    //        let cell:Cell = this.cellMap.get(k);
-    //        cell.isFilled = 0;
-    //        this.cellMap.set(k,cell);
-    //    }
+      for(let k of this.cellMap.keys()) {
+          let cell = this.cellMap.get(k);
+          cell.setIsFilled(0);
+      }
    }
 
     getFilledCells() {
@@ -67,5 +62,45 @@ export class Board {
             }
         }
         return result;
+    }
+
+    movePieceLeft() {
+        this.currentPiece.left();
+    }
+
+    movePieceRight() {
+        this.currentPiece.right();
+    }
+
+    movePieceDown() {
+        this.currentPiece.down();
+    }
+
+    makeTestPiece() : Piece {
+        let x = this.currentPiece.x;
+        let y = this.currentPiece.y;
+        let t = this.currentPiece.type;
+        let s = this.currentPiece.shapes;
+        let n = this.currentPiece.shapeNum;
+        let tp: Piece = new Piece(x, y, t, s, n)
+        return tp;
+    }
+
+    moveIsPossibleLeft() {   
+       let test = this.makeTestPiece();
+       test.left();
+       let xyPositions = test.getXYPositionsOfPiece(test.x, test.y, DIM);
+    }
+
+    movePossibleRight() {
+        let test = this.makeTestPiece();
+        test.right();
+        let xyPositions = test.getXYPositionsOfPiece(test.x, test.y, DIM);
+    }
+    
+    movePossibleDown() {
+        let test = this.makeTestPiece();
+        test.down();
+        let xyPositions = test.getXYPositionsOfPiece(test.x, test.y, DIM);
     }
 }
