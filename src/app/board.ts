@@ -11,7 +11,7 @@ export class Board {
     public w = 0;
     public h = 0;
     public cellMap = new Map<[Number,Number],Cell>();
-    public currentPiece = new Piece(START_X,START_Y, "T", PIECE_T, 0);
+    public currentPiece = new Piece(START_X,START_Y, "T", PIECE_T);
 
     constructor(public cols, public rows) {
 
@@ -42,10 +42,6 @@ export class Board {
             }
         }
     }
-
-    getCurrentPiece() {
-        return this.currentPiece;
-    }
     
    reset(){
       for(let k of this.cellMap.keys()) {
@@ -64,17 +60,33 @@ export class Board {
         return result;
     }
 
+    mutatePiece() {
+        if(this.mutateIsLegit()){
+            this.currentPiece.mutate();
+        }
+    }
+
     movePieceLeft() {
-        this.currentPiece.left();
+        if(this.moveIsPossibleLeft()) {
+            this.currentPiece.left();
+        }
     }
 
     movePieceRight() {
-        this.currentPiece.right();
+        if(this.moveIsPossibleRight()) {
+            this.currentPiece.right();
+        }
     }
 
     movePieceDown() {
         this.currentPiece.down();
     }
+
+    // spawnNextPiece() {
+    //     let test = this.makeTestPiece();
+    //     test.down();
+    //     if(test.y > )
+    // }
 
     makeTestPiece() : Piece {
         let x = this.currentPiece.x;
@@ -82,20 +94,44 @@ export class Board {
         let t = this.currentPiece.type;
         let s = this.currentPiece.shapes;
         let n = this.currentPiece.shapeNum;
-        let tp: Piece = new Piece(x, y, t, s, n)
+        let tp: Piece = new Piece(x, y, t, s)
+        tp.shapeNum = n;
         return tp;
+    }
+
+    mutateIsLegit() {
+        let test = this.makeTestPiece();
+        test.mutate();
+        for(let xy of test.getXYPositionsOfPiece(test.x, test.y, DIM)) {
+            if(xy[0] < 0 || xy[0] > 300) {
+                return false;
+            }
+        }
+        return true;
     }
 
     moveIsPossibleLeft() {   
        let test = this.makeTestPiece();
        test.left();
        let xyPositions = test.getXYPositionsOfPiece(test.x, test.y, DIM);
+       for(let xy of xyPositions) {
+           if(xy[0] < 0) {
+               return false;
+           }
+       }
+       return true;
     }
 
-    movePossibleRight() {
+    moveIsPossibleRight() {
         let test = this.makeTestPiece();
         test.right();
         let xyPositions = test.getXYPositionsOfPiece(test.x, test.y, DIM);
+        for(let xy of xyPositions) {
+            if(xy[0] > 300) {
+                return false;
+            }
+        }
+        return true;
     }
     
     movePossibleDown() {

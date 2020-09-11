@@ -1,7 +1,5 @@
 import { Component, OnInit, ViewChild, ElementRef} from '@angular/core';
 import { Board } from '../board';
-import { Piece } from '../piece';
-import { PIECE_T } from '../piece-permutations';
 
 const SCALE = 1;
 const ROWS = 17 * SCALE;
@@ -40,7 +38,11 @@ export class HomePage implements OnInit{
   }
 
   mutate() {
-    
+    this.board.mutatePiece();
+    this.board.reset();
+    this.ctx.clearRect(0,0,this.w,this.h);
+    this.board.addPieceToBoard()
+    this.drawBoard();
   }
 
   down() {
@@ -67,13 +69,15 @@ export class HomePage implements OnInit{
     this.drawBoard();
   }
  
+  /**
+   * the main game loop
+   */
   update() {
     this.down();
   }
 
   drawBoard(){
     let fillXY = this.board.getFilledCells();
-    console.log(fillXY.length)
     this.ctx.strokeStyle = 'black';
     for(let xy of fillXY) {
       let x = xy[0];
@@ -86,7 +90,7 @@ export class HomePage implements OnInit{
 
   start() {
     this.isStarted = true;
-    this.gameLoop = setInterval( () => this.update(), START_SPEED);
+    this.gameLoop = setInterval(() => this.update(), START_SPEED);
   }
 
   pause() {

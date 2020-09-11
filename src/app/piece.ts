@@ -1,20 +1,18 @@
-import { PIECE_IDS, PIECE_T } from './piece-permutations';
 const DIM = 30;
 
 export class Piece {
 
-    public shapes;      //the permutations list
-    public shapeNum;    //the index for the permutation
-    public type;        //the type symbol  
-    public x;           //masterblock x coord
-    public y;           //masterblock y coord
+    public shapes;          //the permutations list
+    public shapeNum = 0;    //the index for the permutation
+    public type;            //the type symbol  
+    public x;               //masterblock x coord
+    public y;               //masterblock y coord
 
-    constructor(posX,posY,type,shapes,shapeNum){
+    constructor(posX,posY,type,shapes){
         this.x = posX;
         this.y = posY;
         this.type = type;
         this.shapes = shapes;
-        this.shapeNum = shapeNum
     }
 
     getCenterX() {
@@ -29,9 +27,9 @@ export class Piece {
         return this.type;
     }
 
-    private getFilledRowColPairsForPermutation() {
+    private getFilledRowColPairsForPermutation(shapeNum) {
         let result = [];
-        let perm = this.shapes[this.shapeNum];
+        let perm = this.shapes[shapeNum];
         for(let row = 0 ; row < perm.length ; row++) {
             for(let col = 0 ; col < perm[row].length ; col++) {
                 let rcPair:[number,number] = [row,col]; //row,col tuple
@@ -46,7 +44,7 @@ export class Piece {
 
     getXYPositionsOfPiece(centerX:number, centerY:number, dim:number) {
         let xyPositions = [];
-        let filledRCPairs = this.getFilledRowColPairsForPermutation();
+        let filledRCPairs = this.getFilledRowColPairsForPermutation(this.shapeNum);
         for(let i  = 0 ; i < filledRCPairs.length ; i++) {
             let xPos = 0;
             let yPos = 0;
@@ -93,6 +91,10 @@ export class Piece {
         } else {
             this.shapeNum += 1;
         }
+    }
+
+    mutate() {
+        this.incrementShapeNumNum();
     }
     
     left() {
