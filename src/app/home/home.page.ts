@@ -74,6 +74,9 @@ export class HomePage implements OnInit{
    */
   update() {
     this.down();
+    if(this.board.needsToSpawn()) {
+      this.board.lockAndSpawn();
+    }
   }
 
   drawBoard(){
@@ -90,7 +93,7 @@ export class HomePage implements OnInit{
 
   start() {
     this.isStarted = true;
-    this.gameLoop = setInterval(() => this.update(), START_SPEED);
+    this.gameLoop = setInterval(() => this.update(), START_SPEED/4);
   }
 
   pause() {

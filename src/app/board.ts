@@ -42,13 +42,42 @@ export class Board {
             }
         }
     }
+
+    private lockPieceToCells() {
+        let xyCoords = this.currentPiece.getXYPositionsOfPiece(this.currentPiece.x, this.currentPiece.y, DIM);
+        for(let i = 0 ; i < xyCoords.length ; i++) {
+            let pxy = xyCoords[i];
+            for(let k of this.cellMap.keys()) {
+                if(JSON.stringify(k) === JSON.stringify(pxy)) {
+                     this.cellMap.get(k).isLocked = true;
+                }
+            }
+        }
+    }
+
+    needsToSpawn():Boolean {
+        let xyCoords = this.currentPiece.getXYPositionsOfPiece(this.currentPiece.x, this.currentPiece.y, DIM);
+        for(let xy of xyCoords) {
+            if(xy[1] === (this.cols * DIM) - DIM) {
+                return true;
+            } 
+        }
+        return false;
+    }
+
+    lockAndSpawn() {
+        this.lockPieceToCells();
+        this.currentPiece = new Piece(START_X, START_Y, "T",PIECE_T);
+    }
+
     
-   reset(){
-      for(let k of this.cellMap.keys()) {
-          let cell = this.cellMap.get(k);
-          cell.setIsFilled(0);
-      }
-   }
+    
+    reset(){
+        for(let k of this.cellMap.keys()) {
+            let cell = this.cellMap.get(k);
+            cell.setIsFilled(0);
+        }
+    }
 
     getFilledCells() {
         let result = [];
@@ -82,12 +111,6 @@ export class Board {
         this.currentPiece.down();
     }
 
-    // spawnNextPiece() {
-    //     let test = this.makeTestPiece();
-    //     test.down();
-    //     if(test.y > )
-    // }
-
     makeTestPiece() : Piece {
         let x = this.currentPiece.x;
         let y = this.currentPiece.y;
@@ -98,6 +121,10 @@ export class Board {
         tp.shapeNum = n;
         return tp;
     }
+
+    // wontOverLap(test:Piece):Boolean {
+    //     for(let k in )
+    // }
 
     mutateIsLegit() {
         let test = this.makeTestPiece();

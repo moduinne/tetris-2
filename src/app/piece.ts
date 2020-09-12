@@ -96,6 +96,9 @@ export class Piece {
     mutate() {
         this.incrementShapeNumNum();
     }
+    up() {
+        this.y -= DIM;
+    }
     
     left() {
         this.x -= DIM;
