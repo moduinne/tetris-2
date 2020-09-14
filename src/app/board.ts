@@ -1,3 +1,4 @@
+import { SystemJsNgModuleLoader } from '@angular/core';
 import { Cell } from './cell';
 import { Piece } from './piece';
 import { PIECE_T } from './piece-permutations';
@@ -55,10 +56,71 @@ export class Board {
         }
     }
 
+    posEqualTo(pos1, pos2) {
+        if(JSON.stringify(pos1) === JSON.stringify(pos2)) {
+            return true;
+        }
+        return false;
+    }
+
+    willOverLapDown() {
+        let test:Piece = this.makeTestPiece();
+        test.down();
+        let xyArr = test.getXYPositionsOfPiece(test.x, test.y, DIM);
+        for(let i = 0 ; i < xyArr.length ; i++) {
+            let xy = xyArr[i];
+            for(let k of this.cellMap.keys()) {
+                if(this.posEqualTo(xy, k)){
+                    let cell:Cell = this.cellMap.get(k);
+                    if(cell.isLocked) {
+                        return true;
+                    }
+                }
+            }
+        }
+        return false;
+    }
+
+    willOverLapLeft() {
+        let test:Piece = this.makeTestPiece();
+        test.left();
+        let xyArr = test.getXYPositionsOfPiece(test.x, test.y, DIM);
+        for(let i = 0 ; i < xyArr.length ; i++) {
+            let xy = xyArr[i];
+            for(let k of this.cellMap.keys()) {
+                if(this.posEqualTo(xy, k)){
+                    let cell:Cell = this.cellMap.get(k);
+                    if(cell.isLocked) {
+                        return true;
+                    }
+                }
+            }
+        }
+        return false; 
+    }
+
+    willOverLapRight() {
+        let test:Piece = this.makeTestPiece();
+        test.right();
+        let xyArr = test.getXYPositionsOfPiece(test.x, test.y, DIM);
+        for(let i = 0 ; i < xyArr.length ; i++) {
+            let xy = xyArr[i];
+            for(let k of this.cellMap.keys()) {
+                if(this.posEqualTo(xy, k)){
+                    let cell:Cell = this.cellMap.get(k);
+                    if(cell.isLocked) {
+                        return true;
+                    }
+                }
+            }
+        }
+        return false;
+    }
+
     needsToSpawn():Boolean {
         let xyCoords = this.currentPiece.getXYPositionsOfPiece(this.currentPiece.x, this.currentPiece.y, DIM);
         for(let xy of xyCoords) {
-            if(xy[1] === (this.cols * DIM) - DIM) {
+            if(xy[1] === ((this.cols * DIM) - DIM) || this.willOverLapDown()) {
                 return true;
             } 
         }
@@ -69,8 +131,6 @@ export class Board {
         this.lockPieceToCells();
         this.currentPiece = new Piece(START_X, START_Y, "T",PIECE_T);
     }
-
-    
     
     reset(){
         for(let k of this.cellMap.keys()) {
@@ -122,10 +182,6 @@ export class Board {
         return tp;
     }
 
-    // wontOverLap(test:Piece):Boolean {
-    //     for(let k in )
-    // }
-
     mutateIsLegit() {
         let test = this.makeTestPiece();
         test.mutate();
@@ -137,19 +193,26 @@ export class Board {
         return true;
     }
 
-    moveIsPossibleLeft() {   
-       let test = this.makeTestPiece();
-       test.left();
-       let xyPositions = test.getXYPositionsOfPiece(test.x, test.y, DIM);
-       for(let xy of xyPositions) {
-           if(xy[0] < 0) {
-               return false;
-           }
-       }
-       return true;
+
+    moveIsPossibleLeft() {
+        if(this.willOverLapLeft()) {
+            return false;
+        }
+        let test = this.makeTestPiece();
+        test.left();
+        let xyPositions = test.getXYPositionsOfPiece(test.x, test.y, DIM);
+        for(let xy of xyPositions) {
+            if(xy[0] < 0) {
+                return false;
+            }
+        }
+        return true;
     }
 
     moveIsPossibleRight() {
+        if(this.willOverLapRight()) {
+            return false; 
+        }
         let test = this.makeTestPiece();
         test.right();
         let xyPositions = test.getXYPositionsOfPiece(test.x, test.y, DIM);
@@ -165,5 +228,6 @@ export class Board {
         let test = this.makeTestPiece();
         test.down();
         let xyPositions = test.getXYPositionsOfPiece(test.x, test.y, DIM);
+       
     }
 }
