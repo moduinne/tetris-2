@@ -1,7 +1,6 @@
-import { SystemJsNgModuleLoader } from '@angular/core';
 import { Cell } from './cell';
 import { Piece } from './piece';
-import { PIECE_T } from './piece-permutations';
+import { PIECE_I, PIECE_O, PIECE_T, PIECE_L, PIECE_IDS } from './piece-permutations';
 
 const DIM = 30;
 const START_X = 4 * DIM;
@@ -12,7 +11,9 @@ export class Board {
     public w = 0;
     public h = 0;
     public cellMap = new Map<[Number,Number],Cell>();
-    public currentPiece = new Piece(START_X,START_Y, "T", PIECE_T);
+    public startT = this.generateShapeType();
+    public startS = this.getShape(this.startT);
+    public currentPiece = new Piece(START_X,START_Y, this.startT, this.startS);
 
     constructor(public cols, public rows) {
 
@@ -20,6 +21,21 @@ export class Board {
         this.h = this.rows * DIM; 
         this.setCellMap();
         this.addPieceToBoard();
+    }
+
+    generateShapeType() {
+        return PIECE_IDS[Math.random()*PIECE_IDS.length | 0];
+    }
+
+    getShape(s:string) {
+        switch(s){
+            case "T": return PIECE_T;
+            case "O": return PIECE_O;
+            case "L": return PIECE_L;
+            case "I": return PIECE_I;
+            default:
+                return "none";
+        }
     }
 
     setCellMap() {
@@ -129,7 +145,9 @@ export class Board {
 
     lockAndSpawn() {
         this.lockPieceToCells();
-        this.currentPiece = new Piece(START_X, START_Y, "T",PIECE_T);
+        let t = this.generateShapeType();
+        let s = this.getShape(t);
+        this.currentPiece = new Piece(START_X, START_Y, t, s);
     }
     
     reset(){
@@ -222,12 +240,5 @@ export class Board {
             }
         }
         return true;
-    }
-    
-    movePossibleDown() {
-        let test = this.makeTestPiece();
-        test.down();
-        let xyPositions = test.getXYPositionsOfPiece(test.x, test.y, DIM);
-       
     }
 }

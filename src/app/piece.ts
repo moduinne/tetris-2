@@ -75,15 +75,6 @@ export class Piece {
         return xyPositions;
     }
 
-    //moves backwards through ShapeNum numbers
-    decrementShapeNum(){
-        if(this.shapeNum === 0) {
-            this.shapeNum = this.shapes.length-1;
-        } else {
-            this.shapeNum -= 1;
-        }
-    }
-
     //moves forwards through ShapeNum nums
     incrementShapeNumNum() {
         if(this.shapeNum === this.shapes.length-1) {
