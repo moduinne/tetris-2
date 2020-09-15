@@ -3,6 +3,7 @@
     <ion-title>
       Tetris 2
     </ion-title>
+      <label slot="end" class="score-label">Score: {{score}}</label>
     <ion-button *ngIf="!isStarted" class="start-button" (click)="start()" slot="end">start</ion-button>
     <ion-button color="danger" *ngIf="isStarted" class="stop-button" (click)="pause()" slot="end">pause</ion-button>
   </ion-toolbar>
@@ -13,8 +14,9 @@
     <canvas #canvas class="game-canvas" width="{{w}}" height="{{h}}"></canvas>
   </div>
   <div class = "controls-class">
-    <table width="{{w}}">
-      <th><ion-button class = "control-b" (click) = "left()">LEFT</ion-button></th>
+    <ion-button *ngIf="gameOver" (click) = "restart()" color = "secondary">RESTART</ion-button>
+    <table *ngIf="!gameOver" width="{{w}}">
+      <th><ion-button  class = "control-b" (click) = "left()">LEFT</ion-button></th>
       <th><ion-button class = "control-b" (click) = "mutate()">Mutate</ion-button></th>
       <th><ion-button class = "control-b" (click) = "right()">RIGHT</ion-button></th>
     </table>
