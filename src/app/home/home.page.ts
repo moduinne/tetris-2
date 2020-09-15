@@ -20,14 +20,12 @@ export class HomePage implements OnInit{
 
   public w = COLS*DIM;
   public h = ROWS*DIM;
-
   public isStarted:boolean = false;
-
   public board:Board;
-
   private ctx: CanvasRenderingContext2D;
-
   public gameLoop;
+  public score = 0;
+  public gameOver = false;
 
   constructor() {}
 
@@ -69,14 +67,33 @@ export class HomePage implements OnInit{
     this.drawBoard();
   }
  
-  /**
-   * the main game loop
-   */
+  /**MAIN GAME LOOP */
   update() {
-    this.down();
     if(this.board.needsToSpawn()) {
       this.board.lockAndSpawn();
+      if(this.board.getFullKeys().length > 0){
+        let keys = this.board.getFullKeys();
+        this.board.removeLines(keys);
+        this.setScore(this.board.getScore());
+      }
     }
+    this.down();
+    this.gameOver = this.board.gameOver;
+    if(this.gameOver){
+      this.pause();
+      this.isStarted = false;
+    }
+  }
+  restart() {
+    this.ctx.clearRect(0,0,this.w,this.h);
+    this.board = new Board(ROWS,COLS);
+    this.score = 0;
+    this.gameOver = false;
+    this.drawBoard();
+  }
+  
+  setScore(num){
+    this.score = num;
   }
 
   drawBoard(){
