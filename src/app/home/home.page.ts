@@ -5,7 +5,7 @@ const SCALE = 1;
 const ROWS = 17 * SCALE;
 const COLS = 11 * SCALE;
 const DIM = 30 /SCALE;
-const START_SPEED = 1000;
+const START_SPEED = 2000;
 
 @Component({
   selector: 'app-home',
